@@ -63,8 +63,8 @@ class HomePage extends React.Component {
     handleSaveNote = (note) => {
         // Save note logic
         const noteRequest = {
-            id:note.id,
-            titulo:note.titulo,
+            id: note.id,
+            titulo: note.titulo,
             conteudo: note.conteudo
         }
         this.notasService.saveNote(noteRequest).then(notas => {
@@ -87,16 +87,35 @@ class HomePage extends React.Component {
         window.location.replace("login");
     };
 
-    handleContentChange = (id, event) => {
+    handleContentChange = (n, event) => {
+        if (n.editMode) {
+            const { notes } = this.state;
+            const updatedNotes = notes.map(note => {
+                if (note.id === n.id) {
+                    return { ...note, conteudo: event.target.value };
+                }
+                return note;
+            });
+            this.setState({ notes: updatedNotes });
+        }
+
+    };
+
+    toggleEditMode = (id) => {
         const { notes } = this.state;
+        const nota = notes.find(note => note.id === id);
+        if (nota.editMode) {
+            this.handleSaveNote(nota);
+        }
         const updatedNotes = notes.map(note => {
-          if (note.id === id) {
-            return { ...note, conteudo: event.target.value };
-          }
-          return note;
+            if (note.id === id) {
+                return { ...note, editMode: !note.editMode };
+            }
+            return note;
         });
         this.setState({ notes: updatedNotes });
-      };
+
+    };
 
 
     render() {
@@ -105,11 +124,15 @@ class HomePage extends React.Component {
         return (
             <div>
                 <nav class="navbar navbar-light bg-light justify-content-between">
-                    <div class="navbar-nav">
-                        {this.state.user && <p>{"Olá " + this.state.user.usuario}</p>}
+                    <div style={{
+                        marginLeft: "5vw"
+                    }} class="navbar-nav">
+                        {this.state.user && <h1>{"Olá " + this.state.user.usuario}</h1>}
 
                     </div>
-                    <div class="ml-auto">
+                    <div style={{
+                        marginRight: "5vw"
+                    }} class="ml-auto">
                         <Button id="logout" onClick={() => this.logout()}>Logout</Button>
                     </div>
                 </nav>
@@ -122,7 +145,12 @@ class HomePage extends React.Component {
                 }}>
                     {notes.map(note => (
                         <Card key={note.id} style={{ width: '80%' }}>
-                            <FontAwesomeIcon icon={faPenToSquare} size="2x" />
+                            <div style={{
+                                marginLeft: "2vw",
+                                marginTop: "2vh"
+                            }}>
+                                <FontAwesomeIcon icon={faPenToSquare} size="2x" />
+                            </div>
                             <Card.Body>
                                 <Card.Title>{note.titulo}</Card.Title>
                                 <Card.Text>
@@ -130,17 +158,24 @@ class HomePage extends React.Component {
                                         <Form.Control
                                             as="textarea"
                                             value={note.conteudo}
-                                            onChange={event => this.handleContentChange(note.id, event)}
+                                            onChange={event => this.handleContentChange(note, event)}
                                             placeholder="Enter note content"
                                         />
                                     </FloatingLabel>
                                 </Card.Text>
-                                <Button variant="primary" onClick={() => this.handleSaveNote(note)}>
-                                    Salvar nota
-                                </Button>
-                                <Button variant="danger" onClick={() => this.handleDeleteNote(note.id)}>
-                                    Deletar Nota
-                                </Button>
+
+                                <div style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                }}>
+                                    <Button variant={!note.editMode ? 'success' : 'primary'} onClick={() => this.toggleEditMode(note.id)}>
+                                        {note.editMode ? 'Salvar' : 'Editar'}
+                                    </Button>
+
+                                    <Button variant="danger" onClick={() => this.handleDeleteNote(note.id)}>
+                                        Deletar Nota
+                                    </Button>
+                                </div>
                             </Card.Body>
                         </Card>
                     ))}
