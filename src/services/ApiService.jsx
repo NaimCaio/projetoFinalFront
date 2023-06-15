@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://deploy-node-in-vercel-7hxzj8ond-naimcaio.vercel.app'; // Replace with your API base URL
+const BASE_URL = 'https://deploy-node-in-vercel-7ptqjdfda-naimcaio.vercel.app'; // Replace with your API base URL
 
 const ApiService = {
   post: async (endpoint, data) => {
