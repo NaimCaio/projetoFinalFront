@@ -28,7 +28,6 @@ class LoginPage extends React.Component {
             usuario: first_name.value,
             senha: password.value
         }
-        console.log()
         this.loginService.authUser(usuario).then(resp => {
             console.log(resp[0])
             localStorage.setItem('myObject', JSON.stringify(resp[0]));
@@ -63,7 +62,7 @@ class LoginPage extends React.Component {
                     </p>
                     <p>
                         <label>Senha</label>
-                        <Link to="/forget-password"><label className="right-label">Esqueceu a senha?</label></Link>
+                        <Link to="/forget"><label className="right-label">Esqueceu a senha?</label></Link>
                         <br />
                         <input type="password" name="password" required />
                     </p>

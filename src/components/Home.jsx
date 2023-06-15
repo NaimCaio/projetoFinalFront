@@ -11,11 +11,12 @@ import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'; // Replace 'f
 
 class HomePage extends React.Component {
     loginService = new LoginService();
-    notasService= new NotasService();
+    notasService = new NotasService();
     constructor(props) {
         super(props);
         this.state = {
-            notes: []
+            notes: [],
+            user: null
         };
         // [
         //     { id: 1, title: 'Note 1', content: 'Content 1' },
@@ -23,16 +24,17 @@ class HomePage extends React.Component {
         //     { id: 3, title: 'Note 3', content: 'Content 3' }
         // ]
         const storedObject = localStorage.getItem('myObject');
-        if (storedObject !== "") {
+        console.log(storedObject)
+        if (storedObject !== undefined && storedObject !== null && storedObject !== "") {
             const usuario = JSON.parse(storedObject)
-            console.log("teste")
-            console.log(usuario)
             this.loginService.authUser(usuario).then(resp => {
                 console.log(resp[0].id)
-                this.notasService.getNotasUsuario(resp[0].id).then(notas=>{
+                this.setState({ user: usuario });
+                console.log(usuario)
+                this.notasService.getNotasUsuario(resp[0].id).then(notas => {
                     console.log(notas)
                     this.setState({ notes: notas })
-                }).catch(e=>{
+                }).catch(e => {
                     console.log(e)
                 })
             }).catch(error => {
@@ -43,7 +45,7 @@ class HomePage extends React.Component {
             window.location.replace("login");
         }
 
-        
+
 
     }
     handleTitleChange = (id, event) => {
@@ -57,65 +59,92 @@ class HomePage extends React.Component {
         this.setState({ notes: updatedNotes });
     }
 
-    handleContentChange = (id, event) => {
-        const { notes } = this.state;
-        const updatedNotes = notes.map(note => {
-            if (note.id === id) {
-                return { ...note, content: event.target.value };
-            }
-            return note;
-        });
-        this.setState({ notes: updatedNotes });
-    }
 
-    handleSaveNote = (id) => {
+    handleSaveNote = (note) => {
         // Save note logic
-        console.log(`Note ${id} saved!`);
+        const noteRequest = {
+            id:note.id,
+            titulo:note.titulo,
+            conteudo: note.conteudo
+        }
+        this.notasService.saveNote(noteRequest).then(notas => {
+            window.location.reload()
+        }).catch(e => {
+            console.log(e)
+        })
     };
 
     handleDeleteNote = (id) => {
-        // Delete note logic
-        const { notes } = this.state;
-        const updatedNotes = notes.filter(note => note.id !== id);
-        this.setState({ notes: updatedNotes });
+        this.notasService.deleteNote(id).then(resp => {
+            window.location.reload()
+        }).catch(e => {
+            console.log(e)
+        })
     };
+    logout = () => {
+        // Delete note logic
+        localStorage.setItem('myObject', "")
+        window.location.replace("login");
+    };
+
+    handleContentChange = (id, event) => {
+        const { notes } = this.state;
+        const updatedNotes = notes.map(note => {
+          if (note.id === id) {
+            return { ...note, conteudo: event.target.value };
+          }
+          return note;
+        });
+        this.setState({ notes: updatedNotes });
+      };
+
 
     render() {
         const { notes } = this.state;
 
         return (
+            <div>
+                <nav class="navbar navbar-light bg-light justify-content-between">
+                    <div class="navbar-nav">
+                        {this.state.user && <p>{"Olá " + this.state.user.usuario}</p>}
 
-            <div style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap:"2vh",
-                marginTop: "5vh"
-            }}>
-                {notes.map(note => (
-          <Card key={note.id} style={{ width: '80%' }}>
-             <FontAwesomeIcon icon={faPenToSquare } size="2x" />
-            <Card.Body>
-              <Card.Title>{note.titulo}</Card.Title>
-              <Card.Text>
-                <FloatingLabel controlId={`floatingInput${note.id}`} label="Nota" className="mb-3">
-                  <Form.Control
-                    as="textarea"
-                    value={note.conteudo}
-                    onChange={event => this.handleContentChange(note.id, event)}
-                    placeholder="Enter note content"
-                  />
-                </FloatingLabel>
-              </Card.Text>
-              <Button variant="primary" onClick={() => this.handleSaveNote(note.id)}>
-                {/* <BsCheck /> Save */}
-              </Button>
-              <Button variant="danger" onClick={() => this.handleDeleteNote(note.id)}>
-                {/* <BsTrash /> Delete */}
-              </Button>
-            </Card.Body>
-          </Card>
-        ))}
+                    </div>
+                    <div class="ml-auto">
+                        <Button id="logout" onClick={() => this.logout()}>Logout</Button>
+                    </div>
+                </nav>
+                <div style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: "2vh",
+                    marginTop: "5vh"
+                }}>
+                    {notes.map(note => (
+                        <Card key={note.id} style={{ width: '80%' }}>
+                            <FontAwesomeIcon icon={faPenToSquare} size="2x" />
+                            <Card.Body>
+                                <Card.Title>{note.titulo}</Card.Title>
+                                <Card.Text>
+                                    <FloatingLabel controlId={`floatingInput${note.id}`} label="Nota" className="mb-3">
+                                        <Form.Control
+                                            as="textarea"
+                                            value={note.conteudo}
+                                            onChange={event => this.handleContentChange(note.id, event)}
+                                            placeholder="Enter note content"
+                                        />
+                                    </FloatingLabel>
+                                </Card.Text>
+                                <Button variant="primary" onClick={() => this.handleSaveNote(note)}>
+                                    Salvar nota
+                                </Button>
+                                <Button variant="danger" onClick={() => this.handleDeleteNote(note.id)}>
+                                    Deletar Nota
+                                </Button>
+                            </Card.Body>
+                        </Card>
+                    ))}
+                </div>
             </div>
         );
     }

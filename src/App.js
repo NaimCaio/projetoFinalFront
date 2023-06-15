@@ -10,6 +10,8 @@ import HomePage from './components/Home'
 // import HomePage from './components/pages/HomePage'
 
 import './App.css'
+import ForgetPage from './components/Forget';
+import RegisterPage from './components/Register';
 
 
 function App() {
@@ -19,6 +21,8 @@ function App() {
         <Route path="/" element={<LoginPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/home" element={<HomePage />} />
+        <Route path="/forget" element={<ForgetPage />} />
+        <Route path="/register" element={<RegisterPage />} />
       </Routes>
     </Router>
 )

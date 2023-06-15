@@ -9,5 +9,13 @@ class LoginService{
         const usuarios= ApiService.post("auth",usuario)
         return usuarios
     }
+    updateUser=(usuario)=>{
+        const usuarios= ApiService.put("users",usuario)
+        return usuarios
+    }
+    createUser=(usuario)=>{
+        const usuarios= ApiService.post("users",usuario)
+        return usuarios
+    }
 } 
 export default LoginService;

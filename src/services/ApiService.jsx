@@ -25,6 +25,26 @@ const ApiService = {
       console.error('Error making GET request:', error);
       throw error;
     }
+  },
+  put: async (endpoint,data) => {
+    try {
+      const response = await axios.put(`${BASE_URL}/${endpoint}`,data);
+      return response.data;
+    } catch (error) {
+      // Handle error here, e.g., log or throw an exception
+      console.error('Error making GET request:', error);
+      throw error;
+    }
+  },
+  delete: async (endpoint) => {
+    try {
+      const response = await axios.delete(`${BASE_URL}/${endpoint}`);
+      return response.data;
+    } catch (error) {
+      // Handle error here, e.g., log or throw an exception
+      console.error('Error making GET request:', error);
+      throw error;
+    }
   }
 };
 
