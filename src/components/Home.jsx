@@ -28,7 +28,9 @@ class HomePage extends React.Component {
                 console.log(usuario)
                 this.notasService.getNotasUsuario(resp[0].id).then(notas => {
                     console.log(notas)
-                    this.setState({ notes: notas })
+                    const notasSort = notas.sort((a, b) => new Date(b.atualizacao) - new Date(a.atualizacao));
+                    console.log(notasSort)
+                    this.setState({ notes: notasSort })
                 }).catch(e => {
                     console.log(e)
                 })
@@ -88,6 +90,20 @@ class HomePage extends React.Component {
             const updatedNotes = notes.map(note => {
                 if (note.id === n.id) {
                     return { ...note, conteudo: event.target.value };
+                }
+                return note;
+            });
+            this.setState({ notes: updatedNotes });
+        }
+
+    };
+
+    handletitleChange = (n, event) => {
+        if (n.editMode) {
+            const { notes } = this.state;
+            const updatedNotes = notes.map(note => {
+                if (note.id === n.id) {
+                    return { ...note, titulo: event.target.value };
                 }
                 return note;
             });
@@ -160,10 +176,16 @@ class HomePage extends React.Component {
                                 margin:"1vh"
                             }}>
                                 <FontAwesomeIcon icon={faPenToSquare} size="2x" />
-                                <div>{"Ultima atualização: " + note.atualizacao?this.formateDate(note.criacao): this.formateDate(note.atualizacao)}</div>
+                                <div>{"Ultima atualização: " + (note.atualizacao?this.formateDate(note.atualizacao):this.formateDate(note.criacao)) }</div>
                             </div>
                             <Card.Body>
-                                <Card.Title>{note.titulo}</Card.Title>
+                                <Card.Title>
+                                    <input 
+                                            value={note.titulo}
+                                            onChange={event => this.handletitleChange(note, event)}
+                                            placeholder="Enter note content">
+                                    </input>
+                                </Card.Title>
                                 <Card.Text>
                                     <FloatingLabel controlId={`floatingInput${note.id}`} label="Nota" className="mb-3">
                                         <Form.Control
