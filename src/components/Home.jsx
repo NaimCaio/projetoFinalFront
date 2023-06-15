@@ -18,11 +18,6 @@ class HomePage extends React.Component {
             notes: [],
             user: null
         };
-        // [
-        //     { id: 1, title: 'Note 1', content: 'Content 1' },
-        //     { id: 2, title: 'Note 2', content: 'Content 2' },
-        //     { id: 3, title: 'Note 3', content: 'Content 3' }
-        // ]
         const storedObject = localStorage.getItem('myObject');
         console.log(storedObject)
         if (storedObject !== undefined && storedObject !== null && storedObject !== "") {
@@ -133,7 +128,6 @@ class HomePage extends React.Component {
 
     render() {
         const { notes } = this.state;
-        console.log(notes)
 
         return (
             <div>
@@ -166,7 +160,7 @@ class HomePage extends React.Component {
                                 margin:"1vh"
                             }}>
                                 <FontAwesomeIcon icon={faPenToSquare} size="2x" />
-                                <div>{"Ultima atualização: " + this.formateDate(note.atualizacao)}</div>
+                                <div>{"Ultima atualização: " + note.atualizacao?this.formateDate(note.criacao): this.formateDate(note.atualizacao)}</div>
                             </div>
                             <Card.Body>
                                 <Card.Title>{note.titulo}</Card.Title>
