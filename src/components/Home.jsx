@@ -116,10 +116,24 @@ class HomePage extends React.Component {
         this.setState({ notes: updatedNotes });
 
     };
+    formateDate =(originalDate)=>{
+        const dateObj = new Date(originalDate);
+
+        const year = dateObj.getFullYear();
+        const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+        const day = String(dateObj.getDate()).padStart(2, "0");
+        const hours = String(dateObj.getHours()).padStart(2, "0");
+        const minutes = String(dateObj.getMinutes()).padStart(2, "0");
+        //const seconds = String(dateObj.getSeconds()).padStart(2, "0");
+
+        return `${year}-${month}-${day} ${hours}:${minutes}`;
+
+    }
 
 
     render() {
         const { notes } = this.state;
+        console.log(notes)
 
         return (
             <div>
@@ -146,10 +160,13 @@ class HomePage extends React.Component {
                     {notes.map(note => (
                         <Card key={note.id} style={{ width: '80%' }}>
                             <div style={{
-                                marginLeft: "2vw",
-                                marginTop: "2vh"
+                                display: "flex",
+                                marginTop: "2vh",
+                                justifyContent: "space-between",
+                                margin:"1vh"
                             }}>
                                 <FontAwesomeIcon icon={faPenToSquare} size="2x" />
+                                <div>{"Ultima atualização: " + this.formateDate(note.atualizacao)}</div>
                             </div>
                             <Card.Body>
                                 <Card.Title>{note.titulo}</Card.Title>
