@@ -6,7 +6,7 @@ import Card from 'react-bootstrap/Card';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare } from '@fortawesome/free-solid-svg-icons'; // Replace 'faIconName' with the specific icon you want to use
+import { faPenToSquare, faPersonWalkingDashedLineArrowRight, faSquarePlus } from '@fortawesome/free-solid-svg-icons'; // Replace 'faIconName' with the specific icon you want to use
 
 
 class HomePage extends React.Component {
@@ -78,6 +78,15 @@ class HomePage extends React.Component {
             console.log(e)
         })
     };
+
+    handleAddNote = () => {
+        this.notasService.addNote().then(resp => {
+            window.location.reload()
+        }).catch(e => {
+            console.log(e)
+        })
+    };
+
     logout = () => {
         // Delete note logic
         localStorage.setItem('myObject', "")
@@ -151,13 +160,15 @@ class HomePage extends React.Component {
                     <div style={{
                         marginLeft: "5vw"
                     }} class="navbar-nav">
-                        {this.state.user && <h1>{"Olá " + this.state.user.usuario}</h1>}
+                        {this.state.user && <h1>{"Olá " + this.state.user.usuario + "!"}</h1>}
 
                     </div>
                     <div style={{
                         marginRight: "5vw"
                     }} class="ml-auto">
-                        <Button id="logout" onClick={() => this.logout()}>Logout</Button>
+                        <Button id="logout" onClick={() => this.logout()}>
+                            <FontAwesomeIcon icon={faPersonWalkingDashedLineArrowRight}/> Logout
+                        </Button>
                     </div>
                 </nav>
                 <div style={{
@@ -212,6 +223,17 @@ class HomePage extends React.Component {
                             </Card.Body>
                         </Card>
                     ))}
+                </div>
+                <div style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: "2vh",
+                    marginTop: "2vh"
+                }}>
+                    <Button type="submit" onClick={() => this.handleAddNote()} label="Adicionar">
+                        <FontAwesomeIcon icon={faSquarePlus}/> Nova Nota
+                    </Button>
                 </div>
             </div>
         );
