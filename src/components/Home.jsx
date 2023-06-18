@@ -79,8 +79,20 @@ class HomePage extends React.Component {
         })
     };
 
-    handleAddNote = () => {
-        this.notasService.addNote().then(resp => {
+    handleCreateNote = () => {
+        console.log(this.state);
+        const newNote = {
+            nota: {
+                titulo: "",
+                conteudo: ""
+            },
+            usuario: {
+                id: this.state.user.id
+            }
+
+        }
+
+        this.notasService.createNote(newNote).then(resp => {
             window.location.reload()
         }).catch(e => {
             console.log(e)
@@ -231,7 +243,7 @@ class HomePage extends React.Component {
                     gap: "2vh",
                     marginTop: "2vh"
                 }}>
-                    <Button type="submit" onClick={() => this.handleAddNote()} label="Adicionar">
+                    <Button type="submit" onClick={() => this.handleCreateNote()}>
                         <FontAwesomeIcon icon={faSquarePlus}/> Nova Nota
                     </Button>
                 </div>

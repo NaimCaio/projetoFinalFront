@@ -13,9 +13,9 @@ class NotasService{
         const usuarios= ApiService.delete("nota/"+id)
         return usuarios
     }
-    addNote =()=>{
-        // const usuarios= ApiService.add("nota/"+id)
-        // return usuarios
+    createNote =(newNote)=>{
+        const usuarios= ApiService.post("criarNota/",newNote)
+        return usuarios
     }
 } 
 export default NotasService;
